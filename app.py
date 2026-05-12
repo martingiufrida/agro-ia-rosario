@@ -5,13 +5,13 @@ Arquitectura de alta densidad, estilo Bloomberg Terminal.
 
 ## Stack Tecnológico
 
-- **Frontend**: Streamlit + Plotly (modo oscuro, JetBrains Mono)
-- **Datos Internacionales**: yfinance (CME — ZS=F, ZC=F, ZW=F)
-- **Macro Local**: ArgentinaDatos API (Mayorista A3500, CCL, MEP)
-- **Término Local**: pyRofex (Matba-Rofex REMARKET)
-- **Fundamental**: USDA FAS PSD API (balance mundial oferta/demanda)
-- **Clima**: NASA POWER (PRECTOTCORR, T2M, RAD — modelo Maas 1982)
-- **Sentimiento**: Alpha Vantage NEWS_SENTIMENT
+# Frontend: Streamlit + Plotly (modo oscuro, JetBrains Mono)
+# Datos Internacionales: yfinance (CME - ZS=F, ZC=F, ZW=F)
+# Macro Local: ArgentinaDatos API (Mayorista A3500, CCL, MEP)
+# Termino Local: pyRofex (Matba-Rofex REMARKET)
+# Fundamental: USDA FAS PSD API (balance mundial oferta/demanda)
+# Clima: NASA POWER (PRECTOTCORR, T2M, RAD - modelo Maas 1982)
+# Sentimiento: Alpha Vantage NEWS_SENTIMENT
 
 ## Instalación
 
