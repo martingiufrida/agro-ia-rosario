@@ -3,85 +3,115 @@ import pandas as pd
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 
-# 1. CONFIGURACIÓN
-st.set_page_config(page_title="Terminal Agro | Operativa", layout="wide")
+# 1. CONFIGURACIÓN INICIAL
+st.set_page_config(page_title="Agro-Terminal Pro", layout="wide")
 
-# 2. FUNCIÓN GRÁFICOS TRADINGVIEW (Símbolos Libres)
+# 2. BARRA LATERAL (MENÚ EXTENSO)
+st.sidebar.title("🛠️ Menú de Terminal")
+menu = st.sidebar.selectbox(
+    "Seleccionar Módulo:",
+    [
+        "Dashboard General", 
+        "Stock/Consumo Global", 
+        "Derivados Financieros", 
+        "Screener Mercado Local",
+        "Macro & Bonos",
+        "Calculadora de Canje"
+    ]
+)
+
+st.sidebar.divider()
+st.sidebar.info(f"Módulo activo: **{menu}**")
+
+# 3. FUNCIONES DE APOYO (GRÁFICOS)
 def crear_chart_agro(ticker_tv):
     return f"""
-    <div style="height:350px;">
+    <div style="height:400px;">
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         <script type="text/javascript">
         new TradingView.widget({{
           "autosize": true, "symbol": "{ticker_tv}", "interval": "D",
-          "timezone": "America/Argentina/Buenos_Aires", "theme": "light",
-          "style": "1", "locale": "es", "toolbar_bg": "#f1f3f6",
-          "enable_publishing": false, "hide_top_toolbar": true,
-          "hide_legend": true, "save_image": false,
-          "container_id": "tv_chart_{ticker_tv.split(':')[-1]}"
+          "theme": "light", "style": "1", "locale": "es", "hide_top_toolbar": true,
+          "container_id": "tv_{ticker_tv.split(':')[-1]}"
         }});
         </script>
-        <div id="tv_chart_{ticker_tv.split(':')[-1]}" style="height:350px;"></div>
+        <div id="tv_{ticker_tv.split(':')[-1]}" style="height:400px;"></div>
     </div>
     """
 
-# 3. SIDEBAR
-st.sidebar.title("Terminal Agro")
-archivo = st.sidebar.file_uploader("Cargar Informes", type=["pdf", "csv", "xlsx"])
+# --- LÓGICA DE NAVEGACIÓN ---
 
-# 4. HEADER Y MÉTRICAS
-st.title("Terminal de Inteligencia Agroeconómica")
-m1, m2, m3, m4 = st.columns(4)
-with m1: st.metric("SOJA ROSARIO", "$265.000", "+1.2%")
-with m2: st.metric("MAÍZ ROSARIO", "$168.000", "-0.8%")
-with m3: st.metric("DÓLAR MEP", "$1.150", "-0.5%")
-with m4: st.metric("BASIS (USD)", "-12.50", "BCR/CME")
+if menu == "Dashboard General":
+    st.title("🛡️ Terminal de Inteligencia Agroeconómica")
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("SOJA ROSARIO", "$265.000", "+1.2%")
+    m2.metric("MAÍZ ROSARIO", "$168.000", "-0.8%")
+    m3.metric("DÓLAR MEP", "$1.150", "-0.5%")
+    m4.metric("BASIS (USD)", "-12.50", "BCR/CME")
+    
+    st.divider()
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.write("### SOJA (ZS)")
+        components.html(crear_chart_agro("CAPITALCOM:SOYBEAN"), height=410)
+    with col2:
+        st.write("### MAÍZ (ZC)")
+        components.html(crear_chart_agro("CAPITALCOM:CORN"), height=410)
+    with col3:
+        st.write("### TRIGO (ZW)")
+        components.html(crear_chart_agro("CAPITALCOM:WHEAT"), height=410)
 
-st.divider()
+elif menu == "Stock/Consumo Global":
+    st.title("🌎 Análisis Fundamental (S&D)")
+    st.markdown("### Balances Globales del USDA")
+    
+    # Aquí va la lógica de Plotly que armamos antes
+    campanas = ['22/23', '23/24', '24/25 (P)']
+    produccion = [382, 395, 398] 
+    consumo = [365, 384, 390]
+    stock_use_ratio = 26.4 
 
-# 5. MONITOREO TRIPLE
-st.subheader("Monitor de Futuros (Referencia Chicago)")
-col_soja, col_maiz, col_trigo = st.columns(3)
-with col_soja:
-    st.write("### SOJA (ZS)")
-    components.html(crear_chart_agro("CAPITALCOM:SOYBEAN"), height=360)
-with col_maiz:
-    st.write("### MAÍZ (ZC)")
-    components.html(crear_chart_agro("CAPITALCOM:CORN"), height=360)
-with col_trigo:
-    st.write("### TRIGO (ZW)")
-    components.html(crear_chart_agro("CAPITALCOM:WHEAT"), height=360)
+    c1, c2 = st.columns([2, 1])
+    with c1:
+        fig = go.Figure(data=[
+            go.Bar(name='Producción', x=campanas, y=produccion, marker_color='#2E5CB8'),
+            go.Bar(name='Consumo', x=campanas, y=consumo, marker_color='#AAAAAA')
+        ])
+        st.plotly_chart(fig, use_container_width=True)
+    with c2:
+        fig_g = go.Figure(go.Indicator(
+            mode = "gauge+number", value = stock_use_ratio,
+            title = {'text': "Stock-to-Use %"},
+            gauge = {'axis': {'range': [None, 40]}, 'bar': {'color': "#FFB900"}}))
+        st.plotly_chart(fig_g, use_container_width=True)
 
-st.divider()
+elif menu == "Derivados Financieros":
+    st.title("📈 Monitor de Derivados")
+    st.write("Espacio reservado para análisis de Volatilidad Implícita y Griegas de Opciones (Matba Rofex).")
+    # Podés agregar un gráfico de TradingView de la acción de GGAL o Futuros de Soja
+    components.html(crear_chart_agro("BCBA:GGAL"), height=500)
 
-# 6. ANÁLISIS FUNDAMENTAL (PLOTLY)
-st.subheader("🌎 Análisis Fundamental: Balance Global (USDA)")
-campanas = ['22/23', '23/24', '24/25 (P)']
-produccion = [382, 395, 398] 
-consumo = [365, 384, 390]
-stock_use_ratio = 26.4 
+elif menu == "Screener Mercado Local":
+    st.title("📊 Screener de Precios Rosario")
+    st.write("Comparativa de precios Pizarra vs. Mercado a Término.")
+    df_local = pd.DataFrame({
+        'Puerto': ['Rosario', 'Quequén', 'Bahía Blanca'],
+        'Soja Spot': [265000, 262000, 267000],
+        'Maíz Spot': [168000, 165000, 170000],
+        'Basis vs Chicago': [-12.5, -15.2, -10.8]
+    })
+    st.table(df_local)
 
-col_chart, col_gauge = st.columns([2, 1])
-with col_chart:
-    fig_bar = go.Figure(data=[
-        go.Bar(name='Producción', x=campanas, y=produccion, marker_color='#2E5CB8'),
-        go.Bar(name='Consumo', x=campanas, y=consumo, marker_color='#AAAAAA')
-    ])
-    fig_bar.update_layout(barmode='group', height=350, margin=dict(l=20, r=20, t=20, b=20))
-    st.plotly_chart(fig_bar, use_container_width=True)
+elif menu == "Calculadora de Canje":
+    st.title("🚜 Optimizador de Canje")
+    st.write("Calculá el beneficio financiero de canjear granos por insumos.")
+    precio_insumo = st.number_input("Precio Insumo (USD/Tn)", value=550)
+    precio_grano = st.number_input("Precio Grano Rosario (USD/Tn)", value=280)
+    
+    ratio = precio_insumo / precio_grano
+    st.metric("Ratio de Canje", f"{ratio:.2f} Tn de grano por Tn de insumo")
+    st.info("Recordá que el canje evita el impuesto al cheque y permite deducir IVA.")
 
-with col_gauge:
-    fig_gauge = go.Figure(go.Indicator(
-        mode = "gauge+number", value = stock_use_ratio,
-        title = {'text': "Stock-to-Use %"},
-        gauge = {'axis': {'range': [None, 40]}, 'bar': {'color': "#FFB900"},
-                 'steps': [{'range': [0, 20], 'color': "#FF4B4B"}, {'range': [20, 30], 'color': "#FFFF33"}, {'range': [30, 40], 'color': "#00CC66"}]}))
-    fig_gauge.update_layout(height=350, margin=dict(l=20, r=20, t=20, b=20))
-    st.plotly_chart(fig_gauge, use_container_width=True)
-
-st.divider()
-
-# 7. TABLA DE RATIOS
-st.subheader("🚜 Optimizador de Canje")
-data = {'Insumo': ['Urea', 'Semilla Soja', 'Fosfato'], 'Precio USD': [540, 48, 720], 'Ratio Soja': [2.04, 0.18, 2.71]}
-st.table(pd.DataFrame(data))
+else:
+    st.title("Monitor Macro & Bonos")
+    st.write("Seguimiento de la curva de bonos soberanos y tasas del BCRA.")
