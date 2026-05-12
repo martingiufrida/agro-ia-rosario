@@ -2,18 +2,18 @@ import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 
-# 1. CONFIGURACIÓN DE LA PÁGINA (Sin estilos personalizados)
-st.set_page_config(page_title="Terminal Agro Gral.", layout="wide")
+# 1. CONFIGURACIÓN DE LA PÁGINA
+st.set_page_config(page_title="Terminal Agro | Dashboard", layout="wide")
 
-# 2. FUNCIÓN DE GRÁFICOS (Mantenemos la lógica de TradingView)
-def crear_chart_compacto(ticker):
+# 2. FUNCIÓN DE GRÁFICOS (Usando símbolos libres de licencia)
+def crear_chart_agro(ticker_tv):
     return f"""
     <div style="height:350px;">
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         <script type="text/javascript">
         new TradingView.widget({{
           "autosize": true,
-          "symbol": "CBOT:{ticker}1!",
+          "symbol": "{ticker_tv}",
           "interval": "D",
           "timezone": "America/Argentina/Buenos_Aires",
           "theme": "light",
@@ -24,10 +24,10 @@ def crear_chart_compacto(ticker):
           "hide_top_toolbar": true,
           "hide_legend": true,
           "save_image": false,
-          "container_id": "tv_chart_{ticker}"
+          "container_id": "tv_chart_{ticker_tv.split(':')[-1]}"
         }});
         </script>
-        <div id="tv_chart_{ticker}" style="height:350px;"></div>
+        <div id="tv_chart_{ticker_tv.split(':')[-1]}" style="height:350px;"></div>
     </div>
     """
 
@@ -50,21 +50,24 @@ with m4:
 
 st.divider()
 
-# 5. MONITOREO TRIPLE LADO A LADO
-st.subheader("Monitor de Futuros (CME Group)")
+# 5. MONITOREO TRIPLE (Símbolos de libre acceso)
+st.subheader("Monitor de Mercados Globales (Referencia Chicago)")
 col_soja, col_maiz, col_trigo = st.columns(3)
 
 with col_soja:
     st.write("### SOJA (ZS)")
-    components.html(crear_chart_compacto("ZS"), height=360)
+    # Usamos CAPITALCOM:SOYBEAN para evitar el bloqueo de licencia
+    components.html(crear_chart_agro("CAPITALCOM:SOYBEAN"), height=360)
 
 with col_maiz:
     st.write("### MAÍZ (ZC)")
-    components.html(crear_chart_compacto("ZC"), height=360)
+    # Usamos CAPITALCOM:CORN
+    components.html(crear_chart_agro("CAPITALCOM:CORN"), height=360)
 
 with col_trigo:
     st.write("### TRIGO (ZW)")
-    components.html(crear_chart_compacto("ZW"), height=360)
+    # Usamos CAPITALCOM:WHEAT
+    components.html(crear_chart_agro("CAPITALCOM:WHEAT"), height=360)
 
 st.divider()
 
