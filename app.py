@@ -1,4 +1,46 @@
 import streamlit as st
+
+# Inyección de CSS para estética Bloomberg
+st.markdown("""
+    <style>
+    /* Fondo principal y textos */
+    .stApp {
+        background-color: #000000;
+        color: #00FF00; /* Verde neón clásico */
+        font-family: 'Courier New', Courier, monospace;
+    }
+    
+    /* Títulos y Subtítulos */
+    h1, h2, h3, p {
+        color: #00FF00 !important;
+    }
+
+    /* Sidebar (Panel de Control) */
+    [data-testid="stSidebar"] {
+        background-color: #111111;
+        border-right: 1px solid #333333;
+    }
+    
+    /* Métricas (Tarjetas de precio) */
+    [data-testid="stMetricValue"] {
+        color: #FF9900 !important; /* Naranja ámbar para números */
+    }
+    
+    /* Contenedores y Tablas */
+    .stTable {
+        background-color: #050505;
+        border: 1px solid #333;
+    }
+    
+    /* Estilo para los botones */
+    .stButton>button {
+        background-color: #222;
+        color: #00FF00;
+        border: 1px solid #00FF00;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+import streamlit as st
 import pandas as pd
 
 # Configuración de la página
