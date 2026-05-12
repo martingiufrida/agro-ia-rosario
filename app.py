@@ -54,30 +54,20 @@ data = {
 }
 df = pd.DataFrame(data)
 st.table(df)
-def crear_chart(ticker):
-    # Cambiamos el prefijo a CBOT que es el estándar para granos en Chicago
-    return f"""
-    <div style="height:400px;">
-        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-        <script type="text/javascript">
-        new TradingView.widget({{
-          "autosize": true,
-          "symbol": "CBOT:{ticker}1!",
-          "interval": "D",
-          "timezone": "America/Argentina/Buenos_Aires",
-          "theme": "dark",
-          "style": "1",
-          "locale": "es",
-          "toolbar_bg": "#f1f3f6",
-          "enable_publishing": false,
-          "hide_top_toolbar": true,
-          "save_image": false,
-          "container_id": "tv_chart_{ticker}"
-        }});
-        </script>
-        <div id="tv_chart_{ticker}" style="height:400px;"></div>
-    </div>
-    """
+
+# --- SECCIÓN DE GRÁFICOS (ESTILO TERMINAL) ---
+st.divider()
+st.subheader("📈 Monitoreo de Futuros (CME Group)")
+
+# ESTA ES LA LÍNEA QUE SEGURO TE FALTA:
+tab1, tab2, tab3 = st.tabs(["SOJA (ZS)", "MAÍZ (ZC)", "TRIGO (ZW)"])
+
+# Luego vienen los bloques que usan esas pestañas
+with tab1:
+    components.html(crear_chart("ZS"), height=410)
+
+with tab2:
+    components.html(crear_chart("ZC"), height=410)
 
 with tab3:
     components.html(crear_chart("ZW"), height=410)
