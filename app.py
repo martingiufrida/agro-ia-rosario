@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
+import plotly.graph_objects as go  # <--- ESTA ES LA LÍNEA NUEVA
 
 # 1. CONFIGURACIÓN DE LA PÁGINA
 st.set_page_config(page_title="Terminal Agro | Dashboard", layout="wide")
