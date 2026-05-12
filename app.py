@@ -54,24 +54,15 @@ data = {
 }
 df = pd.DataFrame(data)
 st.table(df)
-import streamlit.components.v1 as components
-
-# --- SECCIÓN DE GRÁFICOS (ESTILO TERMINAL) ---
-st.divider()
-st.subheader("📈 Monitoreo de Futuros (CME Group)")
-
-# Usamos pestañas para no saturar la pantalla, muy al estilo de las "tabs" de Bloomberg
-tab1, tab2, tab3 = st.tabs(["SOJA (ZS)", "MAÍZ (ZC)", "TRIGO (ZW)"])
-
 def crear_chart(ticker):
-    # Widget de TradingView configurado para look oscuro y profesional
+    # Cambiamos el prefijo a CBOT que es el estándar para granos en Chicago
     return f"""
     <div style="height:400px;">
         <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
         <script type="text/javascript">
         new TradingView.widget({{
           "autosize": true,
-          "symbol": "CME_MINI:{ticker}1!",
+          "symbol": "CBOT:{ticker}1!",
           "interval": "D",
           "timezone": "America/Argentina/Buenos_Aires",
           "theme": "dark",
@@ -87,12 +78,6 @@ def crear_chart(ticker):
         <div id="tv_chart_{ticker}" style="height:400px;"></div>
     </div>
     """
-
-with tab1:
-    components.html(crear_chart("ZS"), height=410)
-
-with tab2:
-    components.html(crear_chart("ZC"), height=410)
 
 with tab3:
     components.html(crear_chart("ZW"), height=410)
