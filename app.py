@@ -1,55 +1,89 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 
-# Configuración de la página
-st.set_page_config(page_title="AgroCFO-GPT Rosario", layout="wide")
+# 1. CONFIGURACIÓN DE LA PÁGINA (Sin estilos personalizados)
+st.set_page_config(page_title="Terminal Agro Gral.", layout="wide")
 
-# --- BARRA LATERAL (Sidebar) ---
-st.sidebar.image("https://www.bcr.com.ar/sites/default/files/logo-bcr.png", width=150)
-st.sidebar.title("Panel de Control")
-st.sidebar.write("Bienvenido, Operador Pérez")
+# 2. FUNCIÓN DE GRÁFICOS (Mantenemos la lógica de TradingView)
+def crear_chart_compacto(ticker):
+    return f"""
+    <div style="height:350px;">
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+        <script type="text/javascript">
+        new TradingView.widget({{
+          "autosize": true,
+          "symbol": "CBOT:{ticker}1!",
+          "interval": "D",
+          "timezone": "America/Argentina/Buenos_Aires",
+          "theme": "light",
+          "style": "1",
+          "locale": "es",
+          "toolbar_bg": "#f1f3f6",
+          "enable_publishing": false,
+          "hide_top_toolbar": true,
+          "hide_legend": true,
+          "save_image": false,
+          "container_id": "tv_chart_{ticker}"
+        }});
+        </script>
+        <div id="tv_chart_{ticker}" style="height:350px;"></div>
+    </div>
+    """
 
-# Subida de archivos (Lo que Claude va a leer)
-uploaded_file = st.sidebar.file_uploader("Subir PDF (USDA, BCR, Normativas)", type=["pdf", "csv", "xlsx"])
+# 3. BARRA LATERAL
+st.sidebar.title("Terminal Agro")
+archivo = st.sidebar.file_uploader("Cargar Informes", type=["pdf", "csv", "xlsx"])
 
-if uploaded_file:
-    st.sidebar.success("Archivo cargado correctamente")
+# 4. HEADER Y MÉTRICAS
+st.title("Terminal de Inteligencia Agroeconómica")
 
-# --- CUERPO PRINCIPAL ---
-st.title("📊 Terminal de Inteligencia Agroeconómica")
-st.markdown("### Nodo Rosario | Análisis Integral de Granos")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric(label="Soja Rosario (Pizarra)", value="$265.000", delta="+1.2%")
-    st.write("**Sentimiento USDA:** Bearish 🔴")
-
-with col2:
-    st.metric(label="Dólar MEP", value="$1.150", delta="-0.5%")
-    st.write("**Basis Rosario/Chicago:** -12.50 USD/Tn")
-
-with col3:
-    st.metric(label="Tasa Badlar (BCRA)", value="42%", delta="0%")
-    st.write("**Riesgo Logístico:** Medio (Demoras en Timbúes)")
+m1, m2, m3, m4 = st.columns(4)
+with m1:
+    st.metric("SOJA ROSARIO", "$265.000", "+1.2%")
+with m2:
+    st.metric("MAÍZ ROSARIO", "$168.000", "-0.8%")
+with m3:
+    st.metric("DÓLAR MEP", "$1.150", "-0.5%")
+with m4:
+    st.metric("BASIS (USD)", "-12.50", "BCR/CME")
 
 st.divider()
 
-# Sección de Recomendación de la IA
-st.subheader("🤖 Recomendación Estratégica (AgroCFO-GPT)")
-st.info("""
-**Análisis de Claude:** Dada la subida de Chicago y el Basis actual en Rosario, 
-se sugiere no entregar mercadería física hoy. Conviene capturar valor mediante 
-un Forward a mayo y cubrir el riesgo con la compra de un Put en Matba Rofex.
-""")
+# 5. MONITOREO TRIPLE LADO A LADO
+st.subheader("Monitor de Futuros (CME Group)")
+col_soja, col_maiz, col_trigo = st.columns(3)
 
-# Tabla de Canje (Simulada)
-st.subheader("🚜 Optimizador de Canje Técnico")
-data = {
-    'Insumo': ['Fertilizante nitrogenado', 'Semilla Soja Enlist', 'Glifosato'],
-    'Precio Contado (USD)': [550, 45, 8],
-    'Ratio Canje Sugerido': [2.1, 0.17, 0.03],
-    'Ahorro Impositivo Est.': ["10.5%", "10.5%", "21%"]
-}
-df = pd.DataFrame(data)
-st.table(df)
+with col_soja:
+    st.write("### SOJA (ZS)")
+    components.html(crear_chart_compacto("ZS"), height=360)
+
+with col_maiz:
+    st.write("### MAÍZ (ZC)")
+    components.html(crear_chart_compacto("ZC"), height=360)
+
+with col_trigo:
+    st.write("### TRIGO (ZW)")
+    components.html(crear_chart_compacto("ZW"), height=360)
+
+st.divider()
+
+# 6. PANEL DE ANÁLISIS E INSUMOS
+col_ia, col_table = st.columns([1, 1.5])
+
+with col_ia:
+    st.subheader("Recomendación Estratégica")
+    st.info("""
+    **Análisis:** Se observa soporte técnico en Chicago. Se recomienda 
+    reforzar coberturas sobre Maíz y esperar mejora de Basis en Soja.
+    """)
+
+with col_table:
+    st.subheader("Ratio de Canje")
+    data = {
+        'Insumo': ['Urea', 'Semilla Soja', 'Fosfato'],
+        'Precio USD': [540, 48, 720],
+        'Ratio Soja': [2.04, 0.18, 2.71],
+        'Detalle': ["IVA 10.5%", "Financiado", "SISA Cat 1"]
+    }
+    st.table(pd.DataFrame(data))
