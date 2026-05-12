@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
-import yfinance as yf  # <--- ESTA ES LA NUEVA LÍNEA
+import yfinance as yf
+import requests  # <--- ESTA ES LA NUEVA LÍNEA
 
 # 1. CONFIGURACIÓN INICIAL
 st.set_page_config(page_title="Agro-Terminal Pro", layout="wide", initial_sidebar_state="expanded")
