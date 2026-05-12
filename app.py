@@ -1,42 +1,55 @@
 import streamlit as st
 
-# Inyección de CSS para estética Bloomberg
+import streamlit as st
+
+# Refinamiento Estético: Bloomberg Moderno
 st.markdown("""
     <style>
-    /* Fondo principal y textos */
+    /* Fondo principal: Gris carbón profesional */
     .stApp {
-        background-color: #000000;
-        color: #00FF00; /* Verde neón clásico */
-        font-family: 'Courier New', Courier, monospace;
+        background-color: #121212;
+        color: #E0E0E0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     
-    /* Títulos y Subtítulos */
-    h1, h2, h3, p {
-        color: #00FF00 !important;
+    /* Títulos en blanco para mayor legibilidad */
+    h1, h2, h3 {
+        color: #FFFFFF !important;
+        font-weight: 600;
     }
 
-    /* Sidebar (Panel de Control) */
+    /* Sidebar más integrada */
     [data-testid="stSidebar"] {
-        background-color: #111111;
+        background-color: #1A1A1A;
         border-right: 1px solid #333333;
     }
     
-    /* Métricas (Tarjetas de precio) */
+    /* Métricas: Valores en Ámbar/Oro (Clásico Bloomberg) */
     [data-testid="stMetricValue"] {
-        color: #FF9900 !important; /* Naranja ámbar para números */
+        color: #FFB900 !important; 
+        font-family: 'Courier New', monospace;
     }
     
-    /* Contenedores y Tablas */
+    /* Etiquetas de métricas en gris claro */
+    [data-testid="stMetricLabel"] {
+        color: #AAAAAA !important;
+    }
+
+    /* Caja de Recomendación: Más sobria */
+    .stAlert {
+        background-color: #1E2633; /* Azul muy oscuro tipo institucional */
+        color: #FFFFFF;
+        border: 1px solid #2E5CB8;
+    }
+
+    /* Tablas: Encabezados destacados y filas limpias */
     .stTable {
-        background-color: #050505;
-        border: 1px solid #333;
+        color: #E0E0E0;
+        background-color: #121212;
     }
-    
-    /* Estilo para los botones */
-    .stButton>button {
-        background-color: #222;
-        color: #00FF00;
-        border: 1px solid #00FF00;
+    thead tr th {
+        background-color: #252525 !important;
+        color: #FFB900 !important;
     }
     </style>
     """, unsafe_allow_html=True)
